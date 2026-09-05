@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <application
+        android:allowBackup="false"
+        android:label="Nossist"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.Empty">
+
+        <!--
+            Fallback path only. Its own task, no recents entry, no history, no starting
+            window, no transition animation so if the system does use it, it is as
+            close to invisible as an activity can be.
+        -->
+        <activity
+            android:name=".NoopAssistant"
+            android:exported="true"
+            android:excludeFromRecents="true"
+            android:noHistory="true"
+            android:finishOnTaskLaunch="true"
+            android:stateNotNeeded="true"
+            android:launchMode="singleInstance"
+            android:taskAffinity=""
+            android:theme="@style/Theme.Nossist.Invisible">
+            <intent-filter>
+                <action android:name="android.intent.action.ASSIST" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VOICE_COMMAND" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+        <!-- Preferred path: handled entirely without a window, so nothing loses focus. -->
+        <service
+            android:name=".NoopVoiceService"
+            android:exported="true"
+            android:enabled="true"
+            android:permission="android.permission.BIND_VOICE_INTERACTION">
+            <intent-filter>
+                <action android:name="android.service.voice.VoiceInteractionService" />
+            </intent-filter>
+            <meta-data
+                android:name="android.voiceinteraction"
+                android:resource="@xml/voice_interaction_service" />
+        </service>
+
+        <service
+            android:name=".NoopSessionService"
+            android:exported="true"
+            android:enabled="true"
+            android:permission="android.permission.BIND_VOICE_INTERACTION" />
+
+        <!-- Required by <voice-interaction-service android:recognitionService>. -->
+        <service
+            android:name=".NoopRecognitionService"
+            android:exported="true"
+            android:enabled="true">
+            <intent-filter>
+                <action android:name="android.speech.RecognitionService" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+            <meta-data
+                android:name="android.speech"
+                android:resource="@xml/recognition_service" />
+        </service>
+
+    </application>
+
+</manifest>
